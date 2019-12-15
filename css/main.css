@@ -13,13 +13,13 @@ p,
 a {
   padding: 0;
   margin: 0;
-  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 body {
   padding: 30px 0;
   height: 100vh;
-  background: #fff;
+  background: #f8f8f8;
   color: #777;
   position: relative;
 }
@@ -66,20 +66,22 @@ main {
 }
 @media (min-width: 768px) {
   main {
-    grid-template-columns: 48% 48%;
+    grid-template-columns: 1fr 1fr;
   }
 }
 @media (min-width: 1024px) {
   main {
-    grid-template-columns: 32% 32% 32%;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
 .card {
+  transition: box-shadow ease-in 0.3s;
   cursor: pointer;
   padding: 15px;
   height: 150px;
   width: 100%;
+  background: white;
   font-size: 3vw;
   display: flex;
   justify-content: space-between;
@@ -127,7 +129,7 @@ main {
   }
 }
 .card * {
-  z-index: -1;
+  pointer-events: none;
 }
 .card p {
   word-break: break-word;
@@ -136,6 +138,9 @@ main {
   .card p {
     font-size: 1.2vw;
   }
+}
+.card:hover {
+  box-shadow: 0 0 10px #aaa;
 }
 
 .focussed {

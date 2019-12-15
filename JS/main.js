@@ -3,23 +3,26 @@ const userSearch = document.querySelector('#user-search');
 const usersUrl = 'https://randomuser.me/api/?results=12&nat=us,gb';
 let focusBox = document.createElement('div');
 let employees = {};
-console.log(userSearch.value)
-fetchData(usersUrl)
-.then(generateHTML(JSON.parse(localStorage.employees)))
-.then(filterEmployees(JSON.parse(localStorage.employees)))
-.then(allowFocus(JSON.parse(localStorage.employees)))
 
+//Fetch the Random Users and activate the functionality.
+fetchData(usersUrl)
+    .then(generateHTML(JSON.parse(localStorage.employees)))
+    .then(filterEmployees(JSON.parse(localStorage.employees)))
+    .then(allowFocus(JSON.parse(localStorage.employees)))
+
+
+///////////////////////////////////////////////////////////
 //Functions
+///////////////////////////////////////////////////////////
+
 function fetchData(url){
     return fetch(url)
         .then(checkStatus)
         .then(res => res.json())
         .then(data => {
-            localStorage.employees = JSON.stringify(data.results);
+            localStorage.employees = JSON.stringify(data.results);      //I needed to use local storage to manipulate the popups when filtering through the search function.
             employees = JSON.parse(localStorage.employees);
-            // return data;
         })
-        // .then(data=> console.log(data.results))
         .catch(err => console.error('The following problem occurred: ', err));
 }
 
@@ -31,7 +34,7 @@ function checkStatus(response) {
     }
 }
 
-function generateHTML(data) {
+function generateHTML(data) {                   //This populates the page
     let pageCards = "";
     data.map((employee, i ) => {
         pageCards +=
@@ -50,7 +53,7 @@ function generateHTML(data) {
     return data;
 }
 
-function allowFocus(data){
+function allowFocus(data){                                      //this function houses the clicking and 'cycling through' functions. 
     if (userSearch.value.length == 0 ){
         data.forEach(employee => employee.inLoop = true);
         localStorage.employees = JSON.stringify(employees);
@@ -59,38 +62,35 @@ function allowFocus(data){
     var focusIndex;
     document.addEventListener('click', (e)=>{
         
-        if (e.target.className.includes('card') && !e.target.className.includes('blurred')){
-            focusIndex = e.target.className.slice(-2);
+        if (e.target.className.includes('card') && !e.target.className.includes('blurred')){    //clicking on a card
+            focusIndex = e.target.className.slice(-2);                                          //get the card index
             focusIndex = focusIndex.replace(/ /g, '');
-            // console.log(focusIndex);
-            employee = data[focusIndex];
-            fillBox(employee);
-            document.querySelectorAll('.card').forEach(card => card.classList.add('blurred'));
+            employee = data[focusIndex];                                                           //use the index to select the localStorage object
+            fillBox(employee);                                                                      // create the popup with that object
+            document.querySelectorAll('.card').forEach(card => card.classList.add('blurred'));      //create a 'blurred' state over the background
             page.classList.add('blurred');
 
         } else if (e.target.id == 'previous'){
-            if (page.className.includes('fresh')){
+            if (page.className.includes('fresh')){                                                  //cycling backwards in the focussed popup
                 removeFocus();
             } else 
-            do {
-                removeFocus();
+            do {                                                                                    //do while loop used after the filter search has taken place
+                removeFocus();                                                                      //and if filtered out, move past them in the cycle.
             }
-            while (!JSON.parse(localStorage.employees)[focusIndex].inLoop);
-            console.log(data[focusIndex].inLoop)
+            while (!JSON.parse(localStorage.employees)[focusIndex].inLoop);                         //as in the filter function below, this continues the cycle while "inLoop" is false
             page.removeChild(focusBox);
             fillBox(data[focusIndex]);
         } else if (e.target.id == 'next') {
-            console.log(JSON.parse(localStorage.employees)[focusIndex]);
             if (page.className.includes('fresh')) {
                 addFocus();
             } else
-            do {
+            do {                                                                                    //as above - cycling past filtered results
                 addFocus();
             }
             while (!JSON.parse(localStorage.employees)[focusIndex].inLoop);
             page.removeChild(focusBox);
             fillBox(data[focusIndex]);
-        } else if (e.target.id === "close-button" || e.target.className.includes("blurred")) {
+        } else if (e.target.id === "close-button" || e.target.className.includes("blurred")) {      //to close the focussed box, click on the "x" or away from the box.
             removeBox();
             document.querySelectorAll('.card').forEach(card => card.classList.remove('blurred'));
             page.classList.remove('blurred');
@@ -115,7 +115,7 @@ function allowFocus(data){
 }
 
 
-function fillBox(employee) {
+function fillBox(employee) {                                            // create the popup focussed box
     let birthday = employee.dob.date;
     birthday = convertBirthday(birthday);
     // console.log(birthday);
@@ -142,8 +142,8 @@ function fillBox(employee) {
     page.appendChild(focusBox);
 }
 
-function convertBirthday(oldDate){
-    let yr = oldDate.slice(2, 4);
+function convertBirthday(oldDate){                                              //my very complex(and probably completely overthought) solution to convert
+    let yr = oldDate.slice(2, 4);                                               //the complete date d=string to a readable format
     let mth = oldDate.slice(5, 7);
     let dy = oldDate.slice(8, 10);
     let newDate =  mth+"/"+dy+"/"+yr;
@@ -153,16 +153,10 @@ function convertBirthday(oldDate){
 function removeBox(){
     page.removeChild(focusBox);
 }
- 
 
-
-
-//Event Listeners
-
-
-function filterEmployees(data){
-    userSearch.addEventListener('keyup', ()=>{
-        page.classList.remove('fresh');
+function filterEmployees(data){                                                                 //my filter function
+    userSearch.addEventListener('keyup', ()=>{                                                  //which also removes filtered users from the focussed cycle
+        page.classList.remove('fresh');                                                         //by creating the "inLoop" state and making it false.
         document.querySelectorAll('.card').forEach(card => card.classList.remove('hideMe'));
         console.log(userSearch.value);
         let employees = data;
@@ -173,7 +167,6 @@ function filterEmployees(data){
             if (card.id.toUpperCase().indexOf(search) == -1) {
                 let i = card.className.slice(-2).replace(/ /g, '');
                 card.classList.add('hideMe');
-                
                 employees[i].inLoop = false;
             } return employees;
         });

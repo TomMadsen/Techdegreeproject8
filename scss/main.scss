@@ -52,7 +52,7 @@ p,
 a {
     padding: 0;
     margin: 0;
-    overflow-wrap: break-word;
+    word-break: break-word;
 };
 
 body{
@@ -64,7 +64,7 @@ body{
         padding: 30px 60px;
     }
     height: 100vh;
-    background: #fff;
+    background: rgb(248, 248, 248);
     color: #777;
     position: relative;
 }
@@ -101,22 +101,22 @@ main{
     
     grid-gap: 20px;
     @include mq(med){
-        grid-template-columns: 48% 48%;
+        grid-template-columns: 1fr 1fr;
         
     }
     @include mq(lg) {
-        grid-template-columns: 32% 32% 32%;
+        grid-template-columns: 1fr 1fr 1fr;
         
     }
 }
 
 .card {
-    
+    transition: box-shadow ease-in .3s;
     cursor: pointer;
     padding: 15px;
     height: 150px;
     width: 100%;
-    // margin-bottom: 20px;
+    background: rgb(255, 255, 255);
     font-size: 3vw;
     @include flexy($hoz:space-between);
     // @include mq(sm) {
@@ -155,13 +155,16 @@ main{
         }
     }
     & *{
-        z-index: -1;
+        pointer-events: none;
     }
     p{
         word-break: break-word;
         @include mq(lg){
             font-size: 1.2vw;
         }
+    }
+    &:hover{
+        box-shadow: 0 0 10px #aaa;
     }
 }
 
@@ -225,6 +228,7 @@ main{
             border-top: 1.5px solid #ddd;
         }
     }
+    
     #close-button{
         cursor: pointer;
         font-size: 25px;
