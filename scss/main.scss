@@ -1,0 +1,245 @@
+// mixins
+@mixin niceBorder {
+    border: 1.5px solid #ddd;
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+@mixin flexy ($hoz:center, $ver: center) {
+    display: flex;
+    justify-content: $hoz;
+    align-items: $ver;
+    @content
+}
+@mixin mq($break) {
+    @if $break=='sm' {
+        @media (min-width: $break-sm) {
+            @content;
+        }
+    }
+    @else if $break=='med' {
+        @media (min-width: $break-med) {
+            @content;
+        }
+    }
+    @else if $break=='lg' {
+        @media (min-width: $break-lg) {
+            @content;
+        }
+    }
+}
+
+// variables
+$break-sm: 400px;
+$break-med: 768px;
+$break-lg: 1024px;
+
+
+
+//base styles
+* {
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+    padding: 0;
+    margin: 0;
+    overflow-wrap: break-word;
+};
+
+body{
+    padding: 30px 0;
+    @include mq(sm){
+        padding: 30px 30px;
+    }
+    @include mq(med) {
+        padding: 30px 60px;
+    }
+    height: 100vh;
+    background: #fff;
+    color: #777;
+    position: relative;
+}
+
+header {
+    @include flexy ($hoz:space-between);
+    height: 60px;
+    position: relative;
+
+    #search-form{
+        width: 30%;
+        position: relative;
+        display: inline-block;
+    }
+
+    #user-search{
+        -webkit-appearance: none;
+        width: 100%;
+        @include niceBorder( );
+        &::-webkit-search-decoration,
+        &::-webkit-search-cancel-button,
+        &::-webkit-search-results-button,
+        &::-webkit-search-results-decoration {
+            display: none;
+        }
+    }
+}
+
+main{
+    padding: 20px 0;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: auto;
+    
+    grid-gap: 20px;
+    @include mq(med){
+        grid-template-columns: 48% 48%;
+        
+    }
+    @include mq(lg) {
+        grid-template-columns: 32% 32% 32%;
+        
+    }
+}
+
+.card {
+    
+    cursor: pointer;
+    padding: 15px;
+    height: 150px;
+    width: 100%;
+    // margin-bottom: 20px;
+    font-size: 3vw;
+    @include flexy($hoz:space-between);
+    // @include mq(sm) {
+    //     // width: 340px;
+    // }
+    @include mq(med){
+        font-size: 1.8vw;
+    }
+    @include mq(lg) {
+        font-size: 1.5vw;
+        height: 200px;
+        // width: 420px;
+    }
+    @include niceBorder();
+    img {
+        height: 15vw;
+        width: 15vw;
+        border-radius: 50%;
+        @include mq(med) {
+            height: 10vw;
+            width: 10vw;
+        }
+        @include mq(lg) {
+            height: 7vw;
+            width: 7vw;
+        }
+    }
+    div {
+        display: none;
+        
+        @include mq(sm) {
+            display: inline-block;
+            margin-right: auto;
+            margin-left: 10px;
+            
+        }
+    }
+    & *{
+        z-index: -1;
+    }
+    p{
+        word-break: break-word;
+        @include mq(lg){
+            font-size: 1.2vw;
+        }
+    }
+}
+
+.focussed{
+    box-shadow: 0 0 0 999px rgba(50, 50, 50, 0.5);
+    position: absolute;
+    height: 80vw;
+    width:70vw;
+    left: 15vw;
+    font-size: 2vw;
+    @include mq(med) {
+        box-shadow: 0 0 0 999px rgba(50, 50, 50, 0.5);
+        height: 60vw;
+        width: 50vw;
+        left: 25vw;
+        font-size: 1.6vw;
+    }
+    @include mq(lg){
+        box-shadow: 0 0 0 999px rgba(50, 50, 50, 0.5);
+    height: 40vw;
+    width:30vw;
+    left: 35vw;
+    font-size: 1.2vw;
+    }
+    line-height: 2.5em;
+    
+    @include niceBorder();
+    background: #fff;
+    @include flexy{
+        flex-direction: column;
+    }
+    .img-holder {
+        @include flexy{
+            flex-direction: row;
+        }
+    }
+    #previous,
+    #next{
+        border: none;
+        background: none;
+        font-size: 3em;
+        color: #aaa;
+        cursor: pointer;
+        &:focus{
+            outline: 0;
+        }
+    }
+    img{
+        height: 200px;
+        width: 200px;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        position: relative;
+    }
+    
+    div{
+        @include flexy {
+            flex-direction: column;
+        }
+        &:nth-child(3){
+            border-top: 1.5px solid #ddd;
+        }
+    }
+    #close-button{
+        cursor: pointer;
+        font-size: 25px;
+        position: absolute;
+        background: none;
+        border: none;
+        right: 5px;
+        top: 5px;
+        color: #999;
+        &:focus {
+            outline: 0;
+        }
+    }
+}
+
+.hideMe{
+    display: none;
+}
